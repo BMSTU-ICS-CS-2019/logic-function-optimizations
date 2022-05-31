@@ -3,31 +3,32 @@ mod quine_mccluskey;
 mod term;
 mod undefined_coefficients;
 
+use std::{num::ParseIntError, str::FromStr};
 pub use {dnf::*, quine_mccluskey::*, term::*, undefined_coefficients::*};
 
-fn main() {
-    let terms: Vec<Term> = [
-        0b000000, 0b000011, 0b000010, 0b000110, // 1
-        0b000111, 0b000101, 0b000100, 0b001000, // 2
-        0b011010, 0b011110, 0b011101, 0b010000, // 3
-        0b010010, 0b010110, 0b010100, 0b110000, // 4
-        0b110010, 0b110110, 0b110100, 0b111010, // 5
-        0b111101, 0b111110, 0b101000, 0b101001, // 6
-        0b101101, 0b101100, 0b100000, 0b100001, // 7
-        0b100010, 0b100110, 0b100101, 0b100100, // 8
-    ]
-    .into_iter()
-    .map(|bits| {
-        println!("-> {bits}");
-        Term(bits)
-    })
-    .collect();
+fn main() -> Result<(), ParseIntError> {
+    let arguments = std::env::args();
 
-    // quine_mccluskey_method_main(&terms);
-    undefined_coefficients_method_main(&terms);
+    let mut terms = Vec::with_capacity(arguments.len());
+
+    let mut length = 0;
+    for argument in arguments.skip(1) {
+        let bits = u128::from_str_radix(&argument, 2)?;
+        println!("-> {bits:06b}");
+        terms.push(Term(bits));
+        println!("\t{}", bits.leading_zeros());
+        length = length.max(u128::BITS - bits.leading_zeros());
+    }
+    let length = length as usize;
+    println!("L = {length}");
+
+    quine_mccluskey_method_main(&terms, length);
+    undefined_coefficients_method_main(&terms, length);
+
+    Ok(())
 }
 
-fn quine_mccluskey_method_main(terms: &Vec<Term>) {
+fn quine_mccluskey_method_main(terms: &Vec<Term>, length: usize) {
     struct Monitor {
         last_implicant: Option<Implicant>,
     }
@@ -58,21 +59,17 @@ fn quine_mccluskey_method_main(terms: &Vec<Term>) {
 
     quine_mccluskey_method(
         &terms,
-        6,
+        length,
         Monitor {
             last_implicant: None,
         },
     );
 }
 
-fn undefined_coefficients_method_main(terms: &Vec<Term>) {
+fn undefined_coefficients_method_main(terms: &Vec<Term>, length: usize) {
     struct Monitor;
     impl UndefinedCoefficientsMonitor for Monitor {
-        fn on_term_equation(
-            &mut self,
-            term: &Term,
-            non_zero_coefficients: Vec<crate::Coefficient>,
-        ) {
+        fn on_term_equation(&mut self, term: &Term, non_zero_coefficients: Vec<Coefficient>) {
             let mut non_first = false;
             for coefficient in non_zero_coefficients {
                 if non_first {
@@ -85,5 +82,5 @@ fn undefined_coefficients_method_main(terms: &Vec<Term>) {
         }
     }
 
-    undefined_coefficients_method(&terms, 6, Monitor);
+    undefined_coefficients_method(&terms, length, Monitor);
 }

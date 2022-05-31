@@ -1,5 +1,5 @@
 use {
-    crate::{Dnf, Term},
+    crate::Term,
     std::{collections::HashSet, fmt},
 };
 
@@ -7,7 +7,7 @@ pub fn undefined_coefficients_method(
     terms: &Vec<Term>,
     length: usize,
     mut monitor: impl UndefinedCoefficientsMonitor,
-) -> Dnf {
+) {
     let n_equations = 1 << length;
     let mut zeroes = HashSet::with_capacity(n_equations);
     for i in 0..n_equations {
@@ -35,7 +35,7 @@ pub fn undefined_coefficients_method(
         );
     }
 
-    todo!()
+    //todo!()
 }
 
 #[derive(Debug, PartialEq, Eq, Hash)]

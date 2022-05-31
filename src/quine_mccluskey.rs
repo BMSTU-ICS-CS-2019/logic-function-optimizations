@@ -1,5 +1,5 @@
 use {
-    crate::{Dnf, Term},
+    crate::Term,
     std::{
         collections::{HashMap, HashSet},
         fmt,
@@ -11,9 +11,9 @@ pub fn quine_mccluskey_method(
     minterms: &Vec<Term>,
     length: usize,
     mut monitor: impl QuineMccluskeyMethodMonitor,
-) -> Dnf {
+) {
     if minterms.is_empty() {
-        return Dnf::empty();
+        return; // Dnf::empty();
     }
 
     let mut groups = HashMap::new();
@@ -107,7 +107,7 @@ pub fn quine_mccluskey_method(
         }
     }
 
-    todo!()
+    // todo!()
 }
 
 #[derive(Debug, Eq, PartialEq, Hash, Clone)]
