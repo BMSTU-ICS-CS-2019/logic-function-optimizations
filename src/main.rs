@@ -3,7 +3,7 @@ mod quine_mccluskey;
 mod term;
 mod undefined_coefficients;
 
-use std::{num::ParseIntError, str::FromStr};
+use std::num::ParseIntError;
 pub use {dnf::*, quine_mccluskey::*, term::*, undefined_coefficients::*};
 
 fn main() -> Result<(), ParseIntError> {
@@ -69,7 +69,7 @@ fn quine_mccluskey_method_main(terms: &Vec<Term>, length: usize) {
 fn undefined_coefficients_method_main(terms: &Vec<Term>, length: usize) {
     struct Monitor;
     impl UndefinedCoefficientsMonitor for Monitor {
-        fn on_term_equation(&mut self, term: &Term, non_zero_coefficients: Vec<Coefficient>) {
+        fn on_term_equation(&mut self, _term: &Term, non_zero_coefficients: Vec<Coefficient>) {
             let mut non_first = false;
             for coefficient in non_zero_coefficients {
                 if non_first {

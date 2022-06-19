@@ -84,10 +84,8 @@ impl Coefficient {
         }
         result += "}^{";
         {
-            let mut i = self.0.len();
             let mut non_first = false;
             for sign in &self.0 {
-                i -= 1;
                 if let Some(sign) = sign {
                     if non_first {
                         result += " ";
@@ -129,7 +127,7 @@ impl fmt::Display for Coefficient {
 }
 
 pub trait UndefinedCoefficientsMonitor {
-    fn on_term_equation(&mut self, term: &Term, non_zero_coefficients: Vec<Coefficient>) {}
+    fn on_term_equation(&mut self, _term: &Term, _non_zero_coefficients: Vec<Coefficient>) {}
 }
 
 #[cfg(test)]

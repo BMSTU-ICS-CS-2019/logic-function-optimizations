@@ -165,9 +165,9 @@ mod tests {
 pub trait QuineMccluskeyMethodMonitor {
     fn on_primary_implicants_found<'a>(
         &mut self,
-        primary_implicants: impl IntoIterator<Item = &'a Implicant>,
+        _primary_implicants: impl IntoIterator<Item = &'a Implicant>,
     ) {
     }
 
-    fn on_primary_implicant_match(&mut self, primary_implicant: &Implicant, term: &Term) {}
+    fn on_primary_implicant_match(&mut self, _primary_implicant: &Implicant, _term: &Term) {}
 }
