@@ -14,15 +14,15 @@ fn main() -> Result<(), ParseIntError> {
     let mut length = 0;
     for argument in arguments.skip(1) {
         let bits = u128::from_str_radix(&argument, 2)?;
-        println!("-> {bits:06b}");
         terms.push(Term(bits));
-        println!("\t{}", bits.leading_zeros());
         length = length.max(u128::BITS - bits.leading_zeros());
     }
     let length = length as usize;
-    println!("L = {length}");
 
+    println!("===== < Quine McCluskey Method > =====");
     quine_mccluskey_method_main(&terms, length);
+    println!();
+    println!("===== < Undefined Coefficients Method > =====");
     undefined_coefficients_method_main(&terms, length);
 
     Ok(())
@@ -37,10 +37,11 @@ fn quine_mccluskey_method_main(terms: &Vec<Term>, length: usize) {
             &mut self,
             primary_implicants: impl IntoIterator<Item = &'a Implicant>,
         ) {
-            println!("===== < Found primary implicants >=====");
+            println!("Found primary implicants:");
             for implicant in primary_implicants {
-                println!(":: {implicant}");
+                println!("- {implicant}");
             }
+            println!("Matches:");
         }
 
         fn on_primary_implicant_match(&mut self, primary_implicant: &Implicant, term: &Term) {
@@ -48,12 +49,12 @@ fn quine_mccluskey_method_main(terms: &Vec<Term>, length: usize) {
                 None => true,
                 Some(last_implicant) => last_implicant != primary_implicant,
             } {
-                println!("<===== {primary_implicant} =====>");
+                println!("\t{primary_implicant}:");
                 self.last_implicant = Some(primary_implicant.clone());
             }
 
             let term = term.0;
-            println!("{primary_implicant}: {term:06b} ({term})");
+            println!("\t- {term:06b} ({term})");
         }
     }
 
