@@ -1,8 +1,12 @@
 [package]
 name = "logic_function_optimizations"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
+authors = ["Petr Portnov <portnovpv@student.bmstu.ru>"]
+repository = "https://github.com/BMSTU-ICS-CS-2019/logic-function-optimizations"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
+[profile.release]
+panic = "abort"
+strip = true
+lto = true
+codegen-units = 1

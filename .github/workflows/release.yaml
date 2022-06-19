@@ -1,0 +1,64 @@
+name: Release
+
+on: { push: { tags: [ v* ] } }
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        target: [ x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc, x86_64-apple-darwin ]
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            binary-name: logic_function_optimizations
+            artifact-name: logic_function_optimizations-linux-x86_64
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            binary-name: logic_function_optimizations.exe
+            artifact-name: logic_function_optimizations-windows-x86_64.exe
+          - target: x86_64-apple-darwin
+            os: macOS-latest
+            binary-name: logic_function_optimizations
+            artifact-name: logic_function_optimizations-darwin-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - uses: actions/cache@v3.0.4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+
+      - name: Build
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: build
+          args: --release --all-features --target ${{ matrix.target }}
+
+      - name: Move binary
+        run: mv target/${{ matrix.target }}/release/${{ matrix.binary-name }} ${{ matrix.artifact-name }}
+
+      - name: Generate checksum
+        run: shasum -a 256 ${{ matrix.artifact-name }} > ${{ matrix.artifact-name }}.sha256
+
+      - name: Upload release binary
+        uses: svenstaro/upload-release-action@2.3.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: logic_function_optimizations-*
+          file_glob: true
+          tag: ${{ github.ref }}
