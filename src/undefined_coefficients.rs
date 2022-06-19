@@ -18,8 +18,6 @@ pub fn undefined_coefficients_method(
     }
     zeroes.shrink_to_fit();
 
-    println!("Zeroes: {:?}", zeroes);
-
     let zero_coefficients: HashSet<Coefficient> = zeroes
         .into_iter()
         .flat_map(|zero| Coefficient::permute_coefficients(zero, length))

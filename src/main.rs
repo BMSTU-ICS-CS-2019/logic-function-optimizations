@@ -19,10 +19,10 @@ fn main() -> Result<(), ParseIntError> {
     }
     let length = length as usize;
 
-    println!("===== < Quine McCluskey Method > =====");
+    println!("# Quine McCluskey Method\n");
     quine_mccluskey_method_main(&terms, length);
     println!();
-    println!("===== < Undefined Coefficients Method > =====");
+    println!("Undefined Coefficients Method\n");
     undefined_coefficients_method_main(&terms, length);
 
     Ok(())
@@ -37,11 +37,11 @@ fn quine_mccluskey_method_main(terms: &Vec<Term>, length: usize) {
             &mut self,
             primary_implicants: impl IntoIterator<Item = &'a Implicant>,
         ) {
-            println!("Found primary implicants:");
+            println!("Found primary implicants:\n");
             for implicant in primary_implicants {
-                println!("- {implicant}");
+                println!("- `{implicant}`");
             }
-            println!("Matches:");
+            println!("\nMatches:\n");
         }
 
         fn on_primary_implicant_match(&mut self, primary_implicant: &Implicant, term: &Term) {
@@ -49,12 +49,12 @@ fn quine_mccluskey_method_main(terms: &Vec<Term>, length: usize) {
                 None => true,
                 Some(last_implicant) => last_implicant != primary_implicant,
             } {
-                println!("\t{primary_implicant}:");
+                println!("`{primary_implicant}`:\n");
                 self.last_implicant = Some(primary_implicant.clone());
             }
 
             let term = term.0;
-            println!("\t- {term:06b} ({term})");
+            println!("  - `{term:06b}` (`{term}`)");
         }
     }
 
@@ -79,9 +79,11 @@ fn undefined_coefficients_method_main(terms: &Vec<Term>, length: usize) {
                 print!("K{}", coefficient.to_latex_string());
                 non_first = true;
             }
-            println!(" = 1\\\\");
+            println!(" = 1\\newline");
         }
     }
 
-    undefined_coefficients_method(&terms, length, Monitor);
+    println!("\n$$");
+    undefined_coefficients_method(terms, length, Monitor);
+    println!("$$");
 }
