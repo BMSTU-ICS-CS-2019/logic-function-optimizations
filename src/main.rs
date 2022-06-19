@@ -22,7 +22,7 @@ fn main() -> Result<(), ParseIntError> {
     println!("# Quine McCluskey Method\n");
     quine_mccluskey_method_main(&terms, length);
     println!();
-    println!("Undefined Coefficients Method\n");
+    println!("# Undefined Coefficients Method\n");
     undefined_coefficients_method_main(&terms, length);
 
     Ok(())
@@ -54,7 +54,7 @@ fn quine_mccluskey_method_main(terms: &Vec<Term>, length: usize) {
             }
 
             let term = term.0;
-            println!("  - `{term:06b}` (`{term}`)");
+            println!("  - `{term:0b}` (`{term}`)");
         }
     }
 
@@ -83,7 +83,7 @@ fn undefined_coefficients_method_main(terms: &Vec<Term>, length: usize) {
         }
     }
 
-    println!("\n$$");
+    println!("$$");
     undefined_coefficients_method(terms, length, Monitor);
     println!("$$");
 }
